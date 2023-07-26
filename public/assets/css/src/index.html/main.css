@@ -1,0 +1,37 @@
+main {
+    text-align: center;
+    padding: 30px;
+}
+
+textarea, button {
+    display: inline-block;
+    width: 100%;
+    background-color: rgb(248, 248, 248);
+    border: 2px solid gray;
+    font-size: 1.2rem;
+    border-radius: 10px;
+    outline: none;
+}
+
+textarea {
+    padding: 4px;
+}
+
+button {
+    font-weight: 600;
+    padding: 8px;
+    font-size: 1rem;
+}
+
+input {
+    padding: 8px;
+    font-size: 1.2rem;
+    background-color: rgb(248, 248, 248);
+    border: 2px solid gray;
+    font-size: 1.2rem;
+    border-radius: 10px;
+}
+
+label {
+    font-weight: 600;
+}
