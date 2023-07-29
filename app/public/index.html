@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robinowitz</title>
+
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+
+
+    <!-- CSS -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- <link rel="stylesheet" href="./assets/css/utils/global.css">
+    <link rel="stylesheet" href="./assets/css/src/index.html/header.css">
+    <link rel="stylesheet" href="./assets/css/src/index.html/main.css"> -->
+    <!-- JS -->
+    <script src="/socket.io/socket.io.js"></script>
+    <!-- <script src="/assets/js/utils/socket.js"></script>
+    <script defer src="/assets/js/src/index.html/sendMsg.js"></script>
+    <script defer src="/assets/js/src/index.html/shutdown.js"></script>
+    <script defer src="/assets/js/src/index.html/setOnlineTime.js"></script>
+    <script defer src="/assets/js/src/index.html/getOnlineTime.js"></script> -->
+</head>
+
+<body>
+    <header>
+        <h1>ROBINOWITZ</h1>
+    </header>
+    <main>
+        <textarea id="textarea-msg" cols="20" rows="3" placeholder="Nachricht..."></textarea>
+        <br>
+        <button id="btn-send-msg">SENDEN</button>
+        <br>
+        <hr>
+        <br>
+        <button id="btn-shutdown">PC AUSSCHALTEN</button>
+        <br>
+        <hr>
+        <br>
+        <label for="input-time">
+            Anzahl online stunde am Tag
+            <input id="input-time" type="number" placeholder="3">
+            <br>
+            <br>
+            <button id="btn-online-time">SPEICHERN</button>
+        </label>
+        <br>
+        <hr>
+    </main>
+</body>
+
+</html>
+
+<style>
+    body {
+        font-family: 'Montserrat', sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    header {
+        text-align: center;
+    }
+
+    main {
+        text-align: center;
+        padding: 30px;
+    }
+
+    textarea,
+    button {
+        display: inline-block;
+        width: 100%;
+        background-color: rgb(248, 248, 248);
+        border: 2px solid gray;
+        font-size: 1.2rem;
+        border-radius: 10px;
+        outline: none;
+    }
+
+    textarea {
+        padding: 4px;
+    }
+
+    button {
+        font-weight: 600;
+        padding: 8px;
+        font-size: 1rem;
+    }
+
+    input {
+        padding: 8px;
+        font-size: 1.2rem;
+        background-color: rgb(248, 248, 248);
+        border: 2px solid gray;
+        font-size: 1.2rem;
+        border-radius: 10px;
+    }
+
+    label {
+        font-weight: 600;
+    }
+</style>
+
+<script defer>
+    var socket = io();
+
+
+    if (!localStorage.isLoggedIn && !window.location.pathname.includes('login')) {
+        window.location.href = '/login'
+    }
+    socket.emit('getOnlineTime')
+
+    socket.on('getOnlineTime', (e) => {
+        // console.log(e)
+        document.getElementById('input-time').value = e
+    })
+    document.getElementById('btn-send-msg').addEventListener('click', (e) => {
+        var msg = document.getElementById('textarea-msg').value
+        socket.emit('showMsg', msg)
+        alert('Nachricht wurde gesendet!')
+    })
+    document.getElementById('btn-online-time').addEventListener('click', (e) => {
+        var num = document.getElementById('input-time').value
+        socket.emit('setOnlineTime', parseInt(num))
+        alert('Zeit wurde gesetzt.')
+    })
+    document.getElementById('btn-shutdown').addEventListener('click', (e) => {
+        socket.emit('shutdown')
+        alert('PC wurde herunterfahren!')
+    })
+</script>

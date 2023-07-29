@@ -25,14 +25,20 @@ app.get('/login', (req, res) => {
     res.sendFile(__dirname + '/public/login.html');
 });
 
-const showMsg = require('./app/showMsg');
-const shutdown = require('./app/shutdown');
-const setOnlineTime = require('./app/setOnlineTime');
+app.get('/login', (req, res) => {
+    res.sendFile(__dirname + '/public/favicon.ico');
+});
+
+const showMsg = require('./functions/showMsg');
+const shutdown = require('./functions/shutdown');
+const setOnlineTime = require('./functions/setOnlineTime');
+const getOnlineTime = require('./functions/getOnlineTime');
 
 io.on('connection', (socket) => {
     showMsg.showMsg(io, socket);
     shutdown.shutdown(io, socket);
     setOnlineTime.setOnlineTime(io, socket);
+    getOnlineTime.getOnlineTime(io, socket);
 });
 
 
@@ -45,15 +51,16 @@ setInterval((e) => {
     var config = fs.readFileSync('config.json');
     var config = JSON.parse(config);
 
-    console.log(String(os.uptime() / 3600) + " Seconds");
+    if (todayDate !== config.todayDate) {
+        config['todayOnlineTime'] = 0;
+        config['todayDate'] = todayDate;
+        fs.writeFileSync('config.json', JSON.stringify(config));
+    } else {
+        config['todayOnlineTime'] = config.todayOnlineTime + 1;
+        fs.writeFileSync('config.json', JSON.stringify(config));
+    }
 
-    if (config.maxOnlineTime < Number(os.uptime() / 3600)) {
+    if (config.maxOnlineTime < (config.todayOnlineTime/60)) {
         exec('shutdown /s');
     }
 }, 1000*60)
-
-
-// var dialog = require('dialog-node');
-
-
-// dialog.info('Type some text', 'Some Title');
