@@ -51,6 +51,8 @@ setInterval((e) => {
     var config = fs.readFileSync('config.json');
     var config = JSON.parse(config);
 
+    var todayDate = new Date().getDate();
+
     if (todayDate !== config.todayDate) {
         config['todayOnlineTime'] = 0;
         config['todayDate'] = todayDate;
